@@ -4,6 +4,7 @@ import Ticker from "../components/Ticker";
 import servicesData from "../data/services";
 import { getServices, getSettings, getDefaultSettings } from "../utils/storage";
 import bmwBg from "../assets/bmw1.webp";
+import bmwMobileBg from "../assets/bmw-mobile.webp";
 
 export default function Home() {
 
@@ -23,7 +24,7 @@ export default function Home() {
         className="hero min-h-screen flex items-center relative overflow-hidden pt-4"
       >
         {/* Full-screen background */}
-        <div className="hero-bg" aria-hidden="true">
+        <div className="hero-bg" aria-hidden="true" style={{ '--mobile-bg': `url(${bmwMobileBg})` }}>
           <div className="hero-bg__image" style={{ backgroundImage: `url(${bmwBg})` }} />
           <div className="hero-bg__overlay" />
         </div>
@@ -192,4 +193,5 @@ function PricingCarousel({ services }) {
       ))}
     </div>
   );
+
 }

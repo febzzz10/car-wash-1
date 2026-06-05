@@ -13,12 +13,8 @@ export default function Navbar() {
     const nav = document.querySelector(".navbar");
     if (!nav) return;
 
-    let lastY = 0;
     const onScroll = () => {
-      const y = window.scrollY;
-      nav.classList.toggle("scrolled", y > 80);
-      nav.classList.toggle("hidden", y > lastY && y > 200);
-      lastY = y;
+      nav.classList.toggle("scrolled", window.scrollY > 80);
     };
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -39,10 +35,10 @@ export default function Navbar() {
       : "text-muted hover:text-text-bright";
 
   return (
-    <nav className="navbar fixed top-0 left-0 right-0 z-50 bg-bg/80 backdrop-blur-md border-b border-line">
+    <nav className="navbar fixed top-0 left-0 right-0 z-50 bg-bg/50 backdrop-blur-xl border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 flex items-center justify-between h-16">
         <Link to="/" className="flex items-center gap-2 font-display font-bold text-lg text-text-bright">
-          <span className="text-muted">Grey</span> Goosee
+          <span className="text-muted">Grey</span> <span className="text-primary">Goosee</span>
         </Link>
 
         {/* Desktop nav */}
