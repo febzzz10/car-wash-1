@@ -80,13 +80,7 @@ export default function Navbar() {
         }`}
       >
         <div className="flex flex-col items-center justify-center gap-10 h-full">
-          <Link
-            to="/booking"
-            className={`text-3xl font-display font-bold transition-colors ${isActive("/booking")}`}
-            onClick={() => setMenuOpen(false)}
-          >
-            Book Now
-          </Link>
+          {/* Book Now link removed from mobile per request */}
         </div>
       </div>
     </nav>

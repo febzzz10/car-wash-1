@@ -1,23 +1,11 @@
 import { Link } from "react-router-dom";
-import { useEffect, useRef } from "react";
 import ServiceCard from "../components/ServiceCard";
+import Ticker from "../components/Ticker";
 import servicesData from "../data/services";
 import { getServices, getSettings, getDefaultSettings } from "../utils/storage";
+import bmwBg from "../assets/bmw1.webp";
 
 export default function Home() {
-  const heroRef = useRef(null);
-
-  useEffect(() => {
-    const hero = heroRef.current;
-    if (!hero) return;
-    const onMove = (e) => {
-      const x = (e.clientX / window.innerWidth) * 100;
-      const y = (e.clientY / window.innerHeight) * 100;
-      hero.style.background = `radial-gradient(600px circle at ${x}% ${y}%, rgba(43,89,176,0.07), transparent 70%)`;
-    };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
-  }, []);
 
   const services = getServices() || servicesData;
   const settings = getSettings() || getDefaultSettings();
@@ -32,27 +20,36 @@ export default function Home() {
     <div>
       {/* 00 / HERO */}
       <section
-        ref={heroRef}
-        className="hero min-h-screen flex items-center relative overflow-hidden pt-24"
+        className="hero min-h-screen flex items-center relative overflow-hidden pt-4"
       >
+        {/* Full-screen background */}
+        <div className="hero-bg" aria-hidden="true">
+          <div className="hero-bg__image" style={{ backgroundImage: `url(${bmwBg})` }} />
+          <div className="hero-bg__overlay" />
+        </div>
+
         {/* Grid overlay */}
         <div className="absolute inset-0 pointer-events-none bg-grid" />
         <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
-          <h1 className="hero__title font-display font-extrabold text-[clamp(36px,8vw,96px)] leading-[1.05] text-text-bright mb-6">
-            <span className="line-mask"><span>Grey</span></span>
-            <span className="line-mask"><span>Goosee</span></span>
+          <h1 className="hero__title font-display font-extrabold text-[clamp(36px,8vw,96px)] leading-[1.05] text-text-bright mb-6" data-animate>
+            <span className="line-mask" style={{ '--stagger': 0 }}><span>Grey</span></span>
+            <span className="line-mask" style={{ '--stagger': 1 }}><span className="text-primary">Goosee</span></span>
           </h1>
-          <p className="hero__sub font-body text-lg text-muted max-w-xl mb-10">
+          <p className="hero__sub font-body text-lg text-muted max-w-xl mb-10" data-animate>
             Our express wash makes car cleaning effortless. at your Home, relax and drive out
             with a sparking clean car.
           </p>
           <Link
             to="/booking"
             className="hero__cta btn-primary inline-flex"
+            data-animate
           >
             Book Your Wash Now →
           </Link>
           <div className="hero__rule hairline mt-12 w-full max-w-xl" />
+        </div>
+        <div className="absolute bottom-20 left-0 right-0">
+          <Ticker />
         </div>
       </section>
 
@@ -188,7 +185,6 @@ function PricingCarousel({ services }) {
           <p className="font-body text-[11px] md:text-sm text-muted leading-relaxed mb-3 line-clamp-1 md:line-clamp-2">{svc.description}</p>
           <Link
             to="/booking"
-            className="btn-primary text-[11px] leading-none md:text-sm w-full justify-center py-2 md:py-3"
           >
             Book Now →
           </Link>

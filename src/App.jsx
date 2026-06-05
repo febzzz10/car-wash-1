@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import ScrollProgress from "./components/ScrollProgress";
 import Home from "./pages/Home";
 import Booking from "./pages/Booking";
 import Confirmation from "./pages/Confirmation";
@@ -59,7 +60,7 @@ export default function App() {
     <BrowserRouter>
       <div className="min-h-screen flex flex-col">
         <Navbar />
-        <main className="flex-1">
+        <main className="flex-1 pt-16">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/booking" element={<Booking />} />
@@ -69,6 +70,7 @@ export default function App() {
           </Routes>
         </main>
         <Footer />
+        <ScrollProgress />
       </div>
     </BrowserRouter>
   );
