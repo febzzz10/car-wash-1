@@ -155,7 +155,7 @@ export default function Home() {
             Mon-Sat: {fmt(wh.start)} – {fmt(wh.end)}
           </p>
           <a
-            href={`https://wa.me/${settings.adminWhatsApp || "971501234567"}`}
+            href={`https://wa.me/${settings.adminWhatsApp || "8590384225"}`}
             target="_blank"
             rel="noopener noreferrer"
             className="btn-primary inline-flex cta-whatsapp"

@@ -173,7 +173,7 @@ export function setSettings(settings) {
 export function getDefaultSettings() {
   return {
     businessName: "AB Washing",
-    adminWhatsApp: "971501234567",
+    adminWhatsApp: "8590384225",
     adminPassword: "admin123",
     adminUsername: "admin",
     workingHours: { start: "09:00", end: "18:00" },

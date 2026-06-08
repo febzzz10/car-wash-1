@@ -63,7 +63,7 @@ export default function Booking() {
 
   const handleConfirm = () => {
     const settings = getSettings();
-    const adminNumber = settings?.adminWhatsApp || "971501234567";
+    const adminNumber = settings?.adminWhatsApp || "8590384225";
     const serviceNames = selectedServices
       .map((id) => services.find((s) => s.id === id)?.name)
       .join(", ");
