@@ -11,8 +11,8 @@ export default function HeroSection() {
         <div className={styles.heroContent}>
           <p className={styles.label}>SPEC 00 / HERO</p>
           <h1 className={styles.title}>
-            Grey
-            <span className={styles.titleAccent}>Goosee</span>
+            AB
+            <span className={styles.titleAccent}>Washing</span>
           </h1>
           <p className={styles.subtitle}>
             Precision hand-wash and ceramic protection at your doorstep.

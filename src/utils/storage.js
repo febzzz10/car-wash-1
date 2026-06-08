@@ -172,7 +172,7 @@ export function setSettings(settings) {
 
 export function getDefaultSettings() {
   return {
-    businessName: "Grey Goosee",
+    businessName: "AB Washing",
     adminWhatsApp: "971501234567",
     adminPassword: "admin123",
     adminUsername: "admin",

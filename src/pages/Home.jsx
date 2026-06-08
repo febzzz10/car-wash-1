@@ -33,8 +33,8 @@ export default function Home() {
         <div className="absolute inset-0 pointer-events-none bg-grid" />
         <div className="max-w-7xl mx-auto px-6 lg:px-8 w-full">
           <h1 className="hero__title font-display font-extrabold text-[clamp(36px,8vw,96px)] leading-[1.05] text-text-bright mb-6" data-animate>
-            <span className="line-mask" style={{ '--stagger': 0 }}><span>Grey</span></span>
-            <span className="line-mask" style={{ '--stagger': 1 }}><span className="text-primary">Goosee</span></span>
+            <span className="line-mask" style={{ '--stagger': 0 }}><span>AB</span></span>
+            <span className="line-mask" style={{ '--stagger': 1 }}><span className="text-primary">Washing</span></span>
           </h1>
           <p className="hero__sub font-body text-lg text-muted max-w-xl mb-10" data-animate>
             Our express wash makes car cleaning effortless. at your Home, relax and drive out
