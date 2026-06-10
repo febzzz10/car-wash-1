@@ -2,9 +2,10 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   getSettings, verifyPassword,
-  isRateLimited, isLockedOut, recordLoginAttempt,
+  isRateLimited, recordLoginAttempt,
   clearLoginAttempts, setAuthSession, validateAuthSession,
 } from "../../utils/storage";
+import { api } from "../../utils/api";
 
 export default function AdminLogin() {
   const [username, setUsername] = useState("");
@@ -57,23 +58,30 @@ export default function AdminLogin() {
 
     try {
       await new Promise((r) => setTimeout(r, 800));
-      const settings = getSettings();
-      const storedHash = settings?._passwordHash;
-      const usernameHash = settings?._usernameHash;
+      let ok = false;
 
-      if (!storedHash || !usernameHash) {
-        recordLoginAttempt(username, false);
-        setError("Invalid credentials");
-        setLoading(false);
-        return;
+      try {
+        const result = await api.login(username.trim(), password);
+        if (result.token) {
+          sessionStorage.setItem("admin_token", result.token);
+          sessionStorage.setItem("admin_expiry", result.expiresAt.toString());
+          ok = true;
+        }
+      } catch {
+        const settings = getSettings();
+        const storedHash = settings?._passwordHash;
+        const usernameHash = settings?._usernameHash;
+
+        if (storedHash && usernameHash) {
+          const [usernameMatch, passwordMatch] = await Promise.all([
+            verifyPassword(username, usernameHash),
+            verifyPassword(password, storedHash),
+          ]);
+          ok = usernameMatch && passwordMatch;
+        }
       }
 
-      const [usernameMatch, passwordMatch] = await Promise.all([
-        verifyPassword(username, usernameHash),
-        verifyPassword(password, storedHash),
-      ]);
-
-      if (usernameMatch && passwordMatch) {
+      if (ok) {
         clearLoginAttempts();
         setAuthSession();
         navigate("/admin/dashboard", { replace: true });

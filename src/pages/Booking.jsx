@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ServiceCard from "../components/ServiceCard";
 import servicesData from "../data/services";
-import { getSlots, setSlots, addBooking, getSettings, getServices } from "../utils/storage";
+import { getSlots, setSlots, addBooking, getSettings, getServices, syncSlots, syncServices } from "../utils/storage";
 import { generateWhatsAppLink } from "../utils/whatsapp";
 import generateTimeSlots from "../data/defaultSlots";
 
@@ -16,7 +16,7 @@ const formatDate = (d) => {
 
 export default function Booking() {
   const [step, setStep] = useState(0);
-  const [services] = useState(() => getServices() || servicesData);
+  const [services, setServices] = useState(() => getServices() || servicesData);
   const [selectedServices, setSelectedServices] = useState([]);
   const [selectedDate, setSelectedDate] = useState("");
   const [selectedSlot, setSelectedSlot] = useState("");
@@ -34,6 +34,8 @@ export default function Booking() {
     if (!getSlots()) {
       setSlots(generateTimeSlots());
     }
+    syncSlots();
+    syncServices().then((data) => data && setServices(data));
   }, []);
 
   const daySlots = (() => {

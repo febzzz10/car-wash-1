@@ -7,7 +7,6 @@ import bmwBg from "../assets/bmw1.webp";
 import bmwMobileBg from "../assets/bmw-mobile.webp";
 
 export default function Home() {
-
   const services = getServices() || servicesData;
   const settings = getSettings() || getDefaultSettings();
   const wh = settings.workingHours || { start: "09:00", end: "18:00" };

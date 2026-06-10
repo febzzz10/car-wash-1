@@ -1,0 +1,29 @@
+name = "ab-washing-api"
+main = "src/index.js"
+compatibility_date = "2025-04-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ab-washing-db"
+database_id = "809a2ba3-db71-46a7-98cc-385c1ff9bd45"
+
+[env.production]
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "ab-washing-db"
+database_id = "809a2ba3-db71-46a7-98cc-385c1ff9bd45"
+
+[observability]
+enabled = false
+head_sampling_rate = 1
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+persist = true
+invocation_logs = true
+
+[observability.traces]
+enabled = false
+persist = true
+head_sampling_rate = 1

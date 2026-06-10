@@ -4,8 +4,12 @@ import {
   getSlots, setSlots, getServices, setServices,
   getBookings, setBookings, getSettings, setSettings,
   getDefaultSettings, validateAuthSession, clearAuthSession,
-  hashAndStorePassword,
+  hashAndStorePassword, syncSlots, syncBookings, syncSettings,
+  syncServiceUpdate, syncServiceDelete, syncServiceCreate,
+  syncSlotUpdate, syncSlotDelete, syncSlotCreate, syncBulkSlots,
+  syncSettingsUpdate,
 } from "../../utils/storage";
+import { api } from "../../utils/api";
 import servicesData from "../../data/services";
 import generateTimeSlots from "../../data/defaultSlots";
 
@@ -58,6 +62,10 @@ function SlotManager() {
     return now.getMonth();
   });
   const [viewYear, setViewYear] = useState(() => new Date().getFullYear());
+
+  useEffect(() => {
+    syncSlots().then((data) => data && setLocalSlots(data));
+  }, []);
   const [newTime, setNewTime] = useState("09:00");
   const [pickerOpen, setPickerOpen] = useState(false);
   const pickerRef = useRef(null);
@@ -101,14 +109,17 @@ function SlotManager() {
   };
 
   const lockSlot = (id) => {
+    const slot = slots.find((s) => s.id === id);
     const updated = slots.map((s) =>
       s.id === id ? { ...s, available: !s.available } : s
     );
     updateSlots(updated);
+    syncSlotUpdate(id, { available: !slot?.available });
   };
 
   const deleteSlot = (id) => {
     updateSlots(slots.filter((s) => s.id !== id));
+    syncSlotDelete(id);
   };
 
   const addSlot = () => {
@@ -122,6 +133,7 @@ function SlotManager() {
       ...slots,
       { id, date: selectedDate, time: newTime, label, available: true, booked: false },
     ].sort((a, b) => a.date.localeCompare(b.date) || a.time.localeCompare(b.time)));
+    syncSlotCreate({ date: selectedDate, time: newTime, label });
   };
 
   const daySlots = slots.filter((s) => s.date === selectedDate).sort((a, b) => a.time.localeCompare(b.time));
@@ -312,6 +324,7 @@ function SlotManager() {
                 s.date === selectedDate && !s.booked ? { ...s, available: false } : s
               );
               updateSlots(updated);
+              syncBulkSlots(selectedDate, false);
             }}
             className="bg-booked/20 text-booked border border-booked/30 text-sm px-4 py-2 rounded-lg hover:bg-booked/30 transition-all font-bold"
           >
@@ -323,6 +336,7 @@ function SlotManager() {
                 s.date === selectedDate && !s.booked ? { ...s, available: true } : s
               );
               updateSlots(updated);
+              syncBulkSlots(selectedDate, true);
             }}
             className="bg-primary/20 text-primary border border-primary/30 text-sm px-4 py-2 rounded-lg hover:bg-primary/30 transition-all font-bold"
           >
@@ -434,15 +448,20 @@ function Wheel({ items, value, onChange, label }) {
 function ServiceManager() {
   const [services, setLocalServices] = useState(() => getServices() || servicesData);
 
+  useEffect(() => {
+    syncServices().then((data) => data && setLocalServices(data));
+  }, []);
+
   const updateService = (id, field, value) => {
     const updated = services.map((s) =>
       s.id === id ? { ...s, [field]: value } : s
     );
     setLocalServices(updated);
     setServices(updated);
+    syncServiceUpdate(id, { [field]: value });
   };
 
-  const addService = () => {
+  const addService = async () => {
     const newSvc = {
       id: Date.now(),
       name: "New Service",
@@ -454,12 +473,19 @@ function ServiceManager() {
     const updated = [...services, newSvc];
     setLocalServices(updated);
     setServices(updated);
+    const result = await syncServiceCreate(newSvc);
+    if (result?.id) {
+      const fixed = updated.map((s) => s.id === newSvc.id ? { ...s, id: result.id } : s);
+      setLocalServices(fixed);
+      setServices(fixed);
+    }
   };
 
   const deleteService = (id) => {
     const updated = services.filter((s) => s.id !== id);
     setLocalServices(updated);
     setServices(updated);
+    syncServiceDelete(id);
   };
 
   return (
@@ -534,10 +560,15 @@ function ServiceManager() {
 function BookingLog() {
   const [bookings, setLocalBookings] = useState(() => getBookings() || []);
 
+  useEffect(() => {
+    syncBookings().then((data) => data && setLocalBookings(data));
+  }, []);
+
   const updateStatus = (id, status) => {
     const updated = bookings.map((b) => (b.id === id ? { ...b, status } : b));
     setLocalBookings(updated);
     setBookings(updated);
+    syncBookingUpdate(id, status);
   };
 
   if (bookings.length === 0) {
@@ -668,10 +699,15 @@ function SettingsPanel() {
   const [newUsername, setNewUsername] = useState("");
   const [passwordError, setPasswordError] = useState("");
 
+  useEffect(() => {
+    syncSettings().then((data) => data && setLocalSettings(data));
+  }, []);
+
   const update = (key, value) => {
     const updated = { ...settings, [key]: value };
     setLocalSettings(updated);
     setSettings(updated);
+    syncSettingsUpdate({ [key]: value });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
@@ -689,6 +725,7 @@ function SettingsPanel() {
     setNewPassword("");
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+    try { await api.changePassword({ password: newPassword }); } catch {}
   };
 
   const handleUsernameChange = async () => {
@@ -700,6 +737,7 @@ function SettingsPanel() {
     setNewUsername("");
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
+    try { await api.changePassword({ username: newUsername }); } catch {}
   };
 
   return (
